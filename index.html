@@ -1,12 +1,25 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HAI DUNIA</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Mobil</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Hello, World!</h1>
-  <p>Ini adalah halaman HTML5 keduaku.</p>
+  <canvas id="gameCanvas" width="360" height="640"></canvas>
+  <div id="ui">
+    <div id="level"></div>
+    <div id="gameOver"></div>
+  </div>
+  <div id="mainMenu">
+    <div class="road-line top"></div> <!-- Garis atas -->
+    <h1 id="title">Game Mobil</h1>
+    <p id="highScoreDisplay"></p>
+    <button id="startGameBtn" class="blink">MAIN</button>
+    <div class="road-line bottom"></div> <!-- Garis bawah -->
+  </div>
+  <button id="restartBtn">Main Lagi</button>
+  <script type="module" src="main.js"></script>
 </body>
 </html>
