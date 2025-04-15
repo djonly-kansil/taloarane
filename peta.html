@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Kampung Taloarane</title>
+    <!-- Link ke stylesheet Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        /* Pastikan peta mengisi seluruh area div */
+        #map { height: 500px; width: 100%; }
+    </style>
+  <script src="script.js" type="module"></script>
+  </head>
+  
+  <body>
+  	
+  	<!-- Header dengan background gambar bergerak -->
+  	<header id="slideshow-header">
+  		<div id="slider-track"></div>
+  		
+  		<div class="header-overlay">
+  			<h1>Selamat Datang di Kampung Taloarane</h1>
+  			<div class="marquee">
+  				<span>Wisata Budaya, Sejarah, dan Keindahan Alam di Jantung Kepulauan Sangihe</span>
+  			</div>
+  		</div>
+  	</header>
+<nav>
+  <a href="index.html">Beranda</a>
+  <a href="sejarah.html">Sejarah</a>
+  <a href="geografis.html">Geografis</a>
+  <a href="leader.html">Kepala Desa</a>
+  <a href="budaya.html">Budaya</a>
+  <a href="peta.html">Peta</a>
+</nav>
+
+<div class="container">
+
+    <!-- Elemen div untuk menampung peta -->
+    <div id="map"></div>
+
+    <!-- Script untuk memuat pustaka Leaflet -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- Script untuk memuat plugin leaflet-rotate -->
+    <script src="https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate.js"></script>
+
+    <!-- Script untuk inisialisasi peta -->
+    <script>
+        // Inisialisasi peta dengan rotasi
+        var map = L.map('map', {
+            rotate: true,
+            rotateControl: {
+                closeOnZeroBearing: false
+            },
+            bearing: 0 // Sudut rotasi awal (dalam derajat)
+        }).setView([3.567679, 125.518160], 15); // Koordinat Taloarane, zoom 15
+
+        // Lapisan citra satelit dari Esri World Imagery
+        var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles © Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        });
+
+        // Lapisan peta jalan dari OpenStreetMap
+        var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+
+        // Tambahkan lapisan satelit sebagai default
+        satelliteLayer.addTo(map);
+
+        // Kontrol untuk beralih antara satelit dan peta jalan
+        var baseLayers = {
+            "Satelit": satelliteLayer,
+            "Peta Jalan": osmLayer
+        };
+        L.control.layers(baseLayers).addTo(map);
+
+        // Opsional: Tambahkan marker untuk menandai titik pusat
+        L.marker([3.567679, 125.518160]).addTo(map)
+            .bindPopup('Kampung Taloarane')
+            .openPopup();
+    </script>
+
+</div>
+</body>
+</html>

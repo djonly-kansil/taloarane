@@ -1,25 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Game Mobil</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kampung Taloarane</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="script.js" type="module"></script>
 </head>
 <body>
-  <canvas id="gameCanvas" width="360" height="640"></canvas>
-  <div id="ui">
-    <div id="level"></div>
-    <div id="gameOver"></div>
+
+  <!-- Header dengan background gambar bergerak -->
+  <header id="slideshow-header">
+    <div id="slider-track"></div>
+
+    <div class="header-overlay">
+      <h1>Selamat Datang di Kampung Taloarane</h1>
+         <div class="marquee">
+        <span>Wisata Budaya, Sejarah, dan Keindahan Alam di Jantung Kepulauan Sangihe</span>
+      </div>
+ </div>
+  </header>
+
+  <!-- Navigasi -->
+  <nav>
+    <a href="index.html">Beranda</a>
+    <a href="sejarah.html">Sejarah</a>
+    <a href="geografis.html">Geografis</a>
+    <a href="leader.html">Kepala Desa</a>
+    <a href="budaya.html">Budaya</a>
+    <a href="peta.html">Peta</a>
+  </nav>
+
+  <!-- Konten utama -->
+  <div class="content container">
+    <h2>Mengenal Kampung Taloarane</h2>
+    <p>
+      Kampung Taloarane adalah destinasi budaya dan alam yang terletak di Kecamatan Manganitu, Kabupaten Kepulauan Sangihe. Dengan posisi strategis di antara dua wilayah bersejarah dan suasana alami yang tenang, Taloarane menawarkan pengalaman wisata yang tak terlupakan bagi pecinta alam dan kebudayaan lokal.
+    </p>
+    <p>
+      Dari peninggalan sejarah raja, adat istiadat yang masih dijaga, hingga panorama perbukitan dan keramahan masyarakat, Taloarane siap menyambut para wisatawan dengan pengalaman yang autentik. Peluang untuk menjelajahi budaya Sangihe, mencicipi kuliner lokal, hingga berinteraksi langsung dengan kehidupan masyarakat adat menjadi daya tarik utama kampung ini.
+    </p>
+    <p>
+      Ayo kunjungi Kampung Taloarane dan temukan keindahan tersembunyi yang akan membuatmu ingin kembali lagi!
+    </p>
   </div>
-  <div id="mainMenu">
-    <div class="road-line top"></div> <!-- Garis atas -->
-    <h1 id="title">Game Mobil</h1>
-    <p id="highScoreDisplay"></p>
-    <button id="startGameBtn" class="blink">MAIN</button>
-    <div class="road-line bottom"></div> <!-- Garis bawah -->
-  </div>
-  <button id="restartBtn">Main Lagi</button>
-  <script type="module" src="main.js"></script>
+
 </body>
 </html>

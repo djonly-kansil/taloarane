@@ -1,201 +1,196 @@
-@font-face {
-  font-family: 'Digital-7';
-  src: url('Digital-7.ttf') format('truetype');
-}
-
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+/* Reset dasar */
+* {
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #1e1e2f, #3b3b5c);
-  font-family: 'Digital-7', monospace;
-  position: relative;
+  box-sizing: border-box;
 }
 
-canvas {
-  display: block;
+body {
+  font-family: 'Segoe UI', sans-serif;
+  line-height: 1.2;
+  background-color: #f5f9fc;
+  color: #333;
+  overflow-x: hidden;
+}
+
+/* ==== SLIDESHOW BACKGROUND HEADER ==== */
+#slideshow-header {
+  position: relative;
+  width: 100%;
+  height: 20vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#slider-track {
   position: absolute;
   top: 0;
   left: 0;
+  display: flex;
+  width: max-content;
+  height: 100%;
+  animation: slide-scroll 150s linear infinite;
+  z-index: 0;
 }
 
-#ui {
-  position: absolute;
-  top: 10px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  color: #fff;
-  font-size: 32px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+#slider-track img {
+  width: 100vw;
+  height: 100%;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
-#gameOver {
-  display: none;
-}
-
-#restartBtn {
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 15px 25px;
-  font-size: 20px;
-  background: linear-gradient(135deg, #33ccff, #ff99cc);
-  border: none;
-  border-radius: 12px;
-  color: #fff;
-  cursor: pointer;
-  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s, box-shadow 0.2s;
-  display: none;
-  z-index: 101;
-}
-
-#restartBtn:hover {
-  transform: translate(-50%, -50%) scale(1.1);
-  box-shadow: 3px 3px 14px rgba(0, 0, 0, 0.5);
-}
-
-.blink {
-  animation: blinkAnim 800ms infinite;
-}
-
-@keyframes blinkAnim {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-@keyframes neonGradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-#title {
-  font-size: 60px;
-  font-weight: bold;
-  background: linear-gradient(270deg, #00f0ff, #ff00c8, #00ff90);
-  background-size: 600% 600%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: neonGradient 3s ease infinite;
-  text-shadow: 0 0 10px #00f0ff, 0 0 20px #ff00c8, 0 0 30px #00ff90;
-  line-height: 1;
-}
-
-#mainMenu {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  color: #fff;
-  font-family: 'Digital-7', monospace;
-  background: rgba(0, 0, 0, 0.85);
-  padding: 50px 60px;
-  border-radius: 20px;
-  border: 2px solid #00ff90;
-  box-shadow: 0 0 15px rgba(0, 255, 144, 0.5);
-  z-index: 100;
-  animation: fadeIn 1s ease;
-}
-
-#mainMenu h1 {
-  margin-bottom: 20px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-#mainMenu p {
-  font-size: 18px;
-  color: #ccc;
-  margin-bottom: 20px;
-}
-
-#startGameBtn {
-  padding: 15px 35px;
-  font-size: 24px;
-  background: linear-gradient(135deg, #ff00c8, #00f0ff);
-  border: none;
-  border-radius: 15px;
-  color: #fff;
-  cursor: pointer;
-  box-shadow: 0 0 10px #ff00c8, 0 0 20px #00f0ff;
-  transition: transform 0.2s, box-shadow 0.2s;
+/* Konten di atas gambar (judul dan marquee) */
+.header-overlay {
   position: relative;
-  overflow: hidden;
-}
-
-#startGameBtn::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: rgba(255, 255, 255, 0.2);
-  transform: rotate(30deg);
-  transition: all 0.3s ease;
-}
-
-#startGameBtn:hover::after {
-  top: 150%;
-  left: 150%;
-}
-
-#startGameBtn:hover {
-  transform: scale(1.1) rotate(2deg);
-  box-shadow: 0 0 15px #ff00c8, 0 0 25px #00f0ff;
-}
-
-.road-line {
-  position: absolute;
-  left: 0;
+  z-index: 1;
+  padding: 20px 10px;
+  color: white;
   width: 100%;
-  height: 5px;
-  background: repeating-linear-gradient(
-    90deg,
-    #fff 0,
-    #fff 10px,
-    transparent 10px,
-    transparent 20px
-  );
-  opacity: 0.7;
+  max-width: none;
 }
 
-.road-line.top {
-  top: 10px;
-  animation: moveLeft 10s linear infinite; /* Bergerak ke kiri */
+/* Animasi geser gambar */
+@keyframes slide-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-.road-line.bottom {
-  bottom: 10px;
-  animation: moveRight 10s linear infinite; /* Bergerak ke kanan */
+/* Marquee */
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
 }
 
-@keyframes moveLeft {
-  0% { background-position: 0 0; }
-  100% { background-position: -20px 0; }
+.marquee span {
+  display: inline-block;
+  padding-left: 100%;
+  animation: marquee 13s linear infinite;
+  font-size: 1.2em;
+  color: #fff;
 }
 
-@keyframes moveRight {
-  0% { background-position: 0 0; }
-  100% { background-position: 20px 0; }
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
 }
 
-@keyframes moveLeftReverse {
-  0% { background-position: 0 0; }
-  100% { background-position: 20px 0; }
+/* H1 dengan efek glow shadow statis berwarna biru */
+h1 {
+  font-size: 2.2em;
+  color: #fff;
+  margin-bottom: 10px;
+  text-align: center;
+  text-shadow: 
+    0 0 10px rgba(0, 153, 255, 0.8),
+    0 0 20px rgba(0, 153, 255, 0.6);
 }
 
-@keyframes moveRightReverse {
-  0% { background-position: 0 0; }
-  100% { background-position: -20px 0; }
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.2em;
+  }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+h2 {
+  font-size: 1.5em;
+  color: #007aa5;
+  margin: 25px 0 10px;
+  text-align: center;
+}
+
+span {
+  font-size: 1.5em;
+}
+
+p {
+  margin-bottom: 20px;
+  margin-left: 0;
+  text-align: justify;
+}
+
+/* Konten utama */
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 30px 20px;
+}
+
+/* Tabel */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+table th,
+table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+table th {
+  background-color: #007aa5;
+  color: #fff;
+}
+
+/* Navigasi */
+nav {
+  background-color: #004466;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  text-align: center;
+  padding: 5px 0px;
+  margin-top: 0px;
+}
+
+nav a {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  padding: 10px 10px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+nav a:hover {
+  text-decoration: underline;
+  color: hotpink;
+}
+
+/* Responsif tambahan */
+@media (max-width: 768px) {
+  #slideshow-header {
+    height: 40vh;
+  }
+  
+  .header-overlay {
+    padding: 20px 10px;
+  }
+  
+  .container {
+    padding: 20px 15px;
+  }
+  
+  table,
+  table th,
+  table td {
+    font-size: 14px;
+  }
+  
+  h2 {
+    font-size: 1.2em;
+  }
+  
+  .marquee span {
+    font-size: 1em;
+  }
 }
