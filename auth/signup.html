@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Daftar</title>
+  <link rel="stylesheet" href="loginsignup.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<div class="container">
+  <h2>Daftar</h2>
+  <form id="signupForm">
+    <input type="text" id="nama" placeholder="Nama Lengkap" required><br>
+    <select id="provinsi" required>
+      <option value="">Pilih Provinsi</option>
+    </select><br>
+    <select id="kabupaten" required>
+      <option value="">Pilih Kabupaten</option>
+    </select><br>
+    <select id="kecamatan" required>
+      <option value="">Pilih Kecamatan</option>
+    </select><br>
+    <select id="kelurahan" required>
+      <option value="">Pilih Kelurahan</option>
+    </select><br>
+    <input type="text" id="kodeRole" placeholder="Masukkan Kode Role (opsional)">
+    <input type="text" id="nohp" placeholder="Nomor Telepon" required><br>
+    <input type="email" id="email" placeholder="Email" required><br>
+    <input type="password" id="password" placeholder="Password" required><br>
+    <button type="submit">Daftar</button>
+  </form>
+  <p>Sudah punya akun? <a href="login.html">Login</a></p>
+</div>
+
+<script type="module" src="./signup.js"></script>
+</body>
+</html>

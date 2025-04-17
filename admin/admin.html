@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Slide Gambar</title>
+  <!-- CSS Online (Bootstrap) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <div class="container py-5">
+    <h2 class="text-center mb-4">Upload Gambar Slide (Max 2MB)</h2>
+
+    <form id="uploadForm">
+      <div class="row g-4">
+        <!-- 10 Kolom Upload Manual -->
+        <div class="col-md-6">
+          <label class="form-label">Slide 1 <small class="text-muted">- max 2MB -</small></label>
+          <input type="file" class="form-control" accept="image/*" id="slide1" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Slide 2 <small class="text-muted">- max 2MB -</small></label>
+          <input type="file" class="form-control" accept="image/*" id="slide2" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Slide 3 <small class="text-muted">- max 2MB -</small></label>
+          <input type="file" class="form-control" accept="image/*" id="slide3" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Slide 4 <small class="text-muted">- max 2MB -</small></label>
+          <input type="file" class="form-control" accept="image/*" id="slide4" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Slide 5 <small class="text-muted">- max 2MB -</small></label>
+          <input type="file" class="form-control" accept="image/*" id="slide5" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Slide 6 <small class="text-muted">- max 2MB -</small></label>
+          <input type="file" class="form-control" accept="image/*" id="slide6" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Slide 7 <small class="text-muted">- max 2MB -</small></label>
+          <input type="file" class="form-control" accept="image/*" id="slide7" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Slide 8 <small class="text-muted">- max 2MB -</small></label>
+          <input type="file" class="form-control" accept="image/*" id="slide8" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Slide 9 <small class="text-muted">- max 2MB -</small></label>
+          <input type="file" class="form-control" accept="image/*" id="slide9" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Slide 10 <small class="text-muted">- max 2MB -</small></label>
+          <input type="file" class="form-control" accept="image/*" id="slide10" />
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary">UPLOAD</button>
+      </div>
+    </form>
+
+    <div class="mt-3" id="uploadStatus"></div>
+  </div>
+
+  <!-- Script -->
+  <script type="module" src="./admin.js"></script>
+</body>
+</html>
