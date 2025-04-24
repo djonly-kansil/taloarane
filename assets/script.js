@@ -5,7 +5,7 @@ const totalSlides = 10;
 	const imageUrls = [];
 	
 	for (let i = 1; i <= totalSlides; i++) {
-		const fileName = `/images/foto${i}.jpg`;
+		const fileName = `images/foto${i}.jpg`;
 		imageUrls.push(fileName);
 	}
 	
