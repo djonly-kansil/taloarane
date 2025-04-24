@@ -1,0 +1,4 @@
+3.565893, 125.517683 - Rumah Raja
+3.567679, 125.518160 - Kantor Desa
+3.564519, 125.517578 - Gereja Katholik
+3.565330, 125.518099 - Rumah Dinas Camat
