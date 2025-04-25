@@ -57,6 +57,7 @@
       <button onclick="goToLocation('raja')">Rumah Raja</button>
       <button onclick="goToLocation('kantor')">Kantor Desa</button>
       <button onclick="goToLocation('gereja')">Gereja Katolik</button>
+      <button onclick="goToLocation('gereja2')">Gereja Petra</button>
       <button onclick="goToLocation('camat')">Rumah Dinas Camat</button>
     </div>
 
@@ -79,6 +80,10 @@
 			coords: [3.564519, 125.517578],
 			label: "Gereja Katolik"
 		},
+		gereja2: {
+	coords: [3.567079, 125.515180],
+	label: "Gereja Petra Manganitu"
+},
 		camat: {
 			coords: [3.565330, 125.518099],
 			label: "Rumah Dinas Camat"
@@ -89,7 +94,7 @@
 		rotate: true,
 		rotateControl: { closeOnZeroBearing: false },
 		bearing: 0
-	}).setView(locations.kantor.coords, 16);
+	}).setView(locations.kantor.coords, 17);
 	
 	const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
 		attribution: 'Tiles © Esri'
