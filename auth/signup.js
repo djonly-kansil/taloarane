@@ -1,4 +1,5 @@
-import app from "../firebase-config.js"; // jika signup.js ada di folder seperti /auth atau /js
+import app from "../firebase-config.js";
+import { loadWilayah } from "./lokasi.js";
 
 import {
 	getAuth,
@@ -16,53 +17,9 @@ import {
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ========================
-// 1. Load Data Lokasi dari Emsifa
-// ========================
-async function loadWilayah() {
-	const provinsiSelect = document.getElementById('provinsi');
-	const kabupatenSelect = document.getElementById('kabupaten');
-	const kecamatanSelect = document.getElementById('kecamatan');
-	const kelurahanSelect = document.getElementById('kelurahan');
-	
-	const getWilayah = async (url) => {
-		const res = await fetch(url);
-		return await res.json();
-	};
-	
-	const provinsi = await getWilayah('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json');
-	provinsi.forEach(p => provinsiSelect.innerHTML += `<option value="${p.id}-${p.name}">${p.name}</option>`);
-	
-	provinsiSelect.addEventListener('change', async () => {
-		const [id] = provinsiSelect.value.split('-');
-		const kabupaten = await getWilayah(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${id}.json`);
-		kabupatenSelect.innerHTML = '<option value="">Pilih Kabupaten</option>';
-		kecamatanSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
-		kelurahanSelect.innerHTML = '<option value="">Pilih Kelurahan</option>';
-		kabupaten.forEach(k => kabupatenSelect.innerHTML += `<option value="${k.id}-${k.name}">${k.name}</option>`);
-	});
-	
-	kabupatenSelect.addEventListener('change', async () => {
-		const [id] = kabupatenSelect.value.split('-');
-		const kecamatan = await getWilayah(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${id}.json`);
-		kecamatanSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
-		kelurahanSelect.innerHTML = '<option value="">Pilih Kelurahan</option>';
-		kecamatan.forEach(k => kecamatanSelect.innerHTML += `<option value="${k.id}-${k.name}">${k.name}</option>`);
-	});
-	
-	kecamatanSelect.addEventListener('change', async () => {
-		const [id] = kecamatanSelect.value.split('-');
-		const kelurahan = await getWilayah(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${id}.json`);
-		kelurahanSelect.innerHTML = '<option value="">Pilih Kelurahan</option>';
-		kelurahan.forEach(k => kelurahanSelect.innerHTML += `<option value="${k.name}">${k.name}</option>`);
-	});
-}
-
+// Panggil fungsi untuk load data lokasi
 loadWilayah();
 
-// ========================
-// 2. Proses Pendaftaran
-// ========================
 document.getElementById("signupForm").addEventListener("submit", async e => {
 	e.preventDefault();
 	
@@ -74,28 +31,44 @@ document.getElementById("signupForm").addEventListener("submit", async e => {
 	const nohp = document.getElementById("nohp").value.trim();
 	const email = document.getElementById("email").value.trim();
 	const password = document.getElementById("password").value;
+	const jenisRole = document.getElementById("jenisRole").value;
 	const kodeRole = document.getElementById("kodeRole").value.trim();
+	const button = e.submitter;
 	
-	if (!nama || !provinsi || !kabupaten || !kecamatan || !kelurahan || !nohp || !email || !password) {
-		alert("Harap isi semua kolom yang wajib diisi.");
+	if (!nama || !provinsi || !kabupaten || !kecamatan || !kelurahan || !nohp || !email || !password || !jenisRole || !kodeRole) {
+		Swal.fire("Oops!", "Harap isi semua kolom yang wajib diisi.", "warning");
 		return;
 	}
 	
-	// ====================
-	// Ambil Role dari Firestore
-	// ====================
-	let role = "viewer"; // default jika kode salah
+	button.disabled = true;
+	button.textContent = "Mendaftar...";
 	
-	if (kodeRole) {
-		try {
-			const kodeRef = doc(db, "roleCodes", kodeRole); // dokumen: ADMIN927, EDITOR744
-			const kodeSnap = await getDoc(kodeRef);
-			if (kodeSnap.exists()) {
-				role = kodeSnap.data().role || "viewer";
+	let role = "viewer";
+	
+	try {
+		const kodeRef = doc(db, "roleCodes", kodeRole);
+		const kodeSnap = await getDoc(kodeRef);
+		if (kodeSnap.exists()) {
+			const roleFromDB = kodeSnap.data().role;
+			if (roleFromDB.toLowerCase() !== jenisRole.toLowerCase()) {
+				await Swal.fire("Kode Tidak Cocok", `Kode role tidak sesuai dengan jenis role yang dipilih (${jenisRole}).`, "error");
+				button.disabled = false;
+				button.textContent = "Daftar";
+				return;
 			}
-		} catch (err) {
-			console.warn("Gagal membaca kode role dari Firestore:", err.message);
+			role = roleFromDB;
+		} else {
+			await Swal.fire("Kode Salah", "Kode Role tidak ditemukan.", "error");
+			button.disabled = false;
+			button.textContent = "Daftar";
+			return;
 		}
+	} catch (err) {
+		await Swal.fire("Error", "Terjadi kesalahan saat memvalidasi kode role.", "error");
+		console.warn(err.message);
+		button.disabled = false;
+		button.textContent = "Daftar";
+		return;
 	}
 	
 	try {
@@ -116,10 +89,10 @@ document.getElementById("signupForm").addEventListener("submit", async e => {
 			createdAt: new Date()
 		});
 		
-		alert("Pendaftaran berhasil! Silakan verifikasi email Anda.");
+		await Swal.fire("Berhasil", "Pendaftaran berhasil! Silakan verifikasi email Anda.", "success");
 		window.location.href = "confirm.html";
 	} catch (error) {
-		let errorMessage = "Terjadi kesalahan saat mendaftar. ";
+		let errorMessage = "Terjadi kesalahan saat mendaftar.";
 		switch (error.code) {
 			case "auth/email-already-in-use":
 				errorMessage = "Email sudah digunakan. Gunakan email lain.";
@@ -131,9 +104,12 @@ document.getElementById("signupForm").addEventListener("submit", async e => {
 				errorMessage = "Password terlalu lemah. Gunakan minimal 6 karakter.";
 				break;
 			default:
-				errorMessage += error.message;
+				errorMessage += `\n${error.message}`;
 				break;
 		}
-		alert(errorMessage);
+		await Swal.fire("Gagal", errorMessage, "error");
+	} finally {
+		button.disabled = false;
+		button.textContent = "Daftar";
 	}
 });

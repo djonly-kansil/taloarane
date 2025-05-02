@@ -39,8 +39,6 @@ async function loadUsers() {
           <td>${data.nohp || "-"}</td>
           <td>${data.role || "-"}</td>
           <td>
-            ${alamat.provinsi || ""}, 
-            ${alamat.kabupaten || ""}, 
             ${alamat.kecamatan || ""}, 
             ${alamat.kelurahan || ""}
           </td>

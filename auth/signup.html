@@ -1,38 +1,91 @@
+<!-- File: register.html -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Daftar</title>
-  <link rel="stylesheet" href="loginsignup.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta charset="UTF-8">
+    <title>Form Registrasi Pengguna</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font modern -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="signup.css">
 </head>
 <body>
-<div class="container">
-  <h2>Daftar</h2>
-  <form id="signupForm">
-    <input type="text" id="nama" placeholder="Nama Lengkap" required><br>
-    <select id="provinsi" required>
-      <option value="">Pilih Provinsi</option>
-    </select><br>
-    <select id="kabupaten" required>
-      <option value="">Pilih Kabupaten</option>
-    </select><br>
-    <select id="kecamatan" required>
-      <option value="">Pilih Kecamatan</option>
-    </select><br>
-    <select id="kelurahan" required>
-      <option value="">Pilih Kelurahan</option>
-    </select><br>
-    <input type="text" id="kodeRole" placeholder="Masukkan Kode Role (opsional)">
-    <input type="text" id="nohp" placeholder="Nomor Telepon" required><br>
-    <input type="email" id="email" placeholder="Email" required><br>
-    <input type="password" id="password" placeholder="Password" required><br>
-    <button type="submit">Daftar</button>
-  </form>
-  <p>Sudah punya akun? <a href="login.html">Login</a></p>
-</div>
+    <div class="form-container">
+        <h2>Registrasi Pengguna</h2>
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="nama">Nama Lengkap</label>
+                <input type="text" id="nama" name="nama"
+                       placeholder="Masukkan nama lengkap Anda" required>
+            </div>
+            <div class="form-group">
+                <label for="provinsi">Provinsi</label>
+                <select id="provinsi" name="provinsi" required>
+                    <option value="" disabled selected>Pilih Provinsi</option>
+                    <!-- Opsi provinsi akan diisi dinamis -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="kabupaten">Kabupaten / Kota</label>
+                <select id="kabupaten" name="kabupaten" required>
+                    <option value="" disabled selected>Pilih Kabupaten/Kota</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="kecamatan">Kecamatan</label>
+                <select id="kecamatan" name="kecamatan" required>
+                    <option value="" disabled selected>Pilih Kecamatan</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="kelurahan">Kelurahan</label>
+                <select id="kelurahan" name="kelurahan" required>
+                    <option value="" disabled selected>Pilih Kelurahan</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="jenisRole">Peran Pengguna</label>
+                <select id="jenisRole" name="jenisRole" required>
+                    <option value="" disabled selected>Pilih Peran</option>
+                    <option value="admin">Admin</option>
+                    <option value="editor">Editor</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="kodeRole">Kode Role</label>
+                <input type="text" id="kodeRole" name="kodeRole"
+                       placeholder="Masukkan kode role (admin/editor)" required>
+            </div>
+            <div class="form-group">
+                <label for="nohp">Nomor HP</label>
+                <input type="tel" id="nohp" name="nohp"
+                       placeholder="Masukkan nomor HP" required pattern="[0-9]{10,13}">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email"
+                       placeholder="contoh: user@example.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password"
+                       placeholder="Masukkan password minimal 8 karakter" required minlength="8">
+                <div class="password-strength">
+                    <div id="strengthBar" class="strength-bar"></div>
+                    <span id="strengthText"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" id="registerBtn">
+                    <span id="btn-text">Daftar</span>
+                    <span id="loadingSpinner" class="spinner hidden"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+    <!-- Library SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script type="module" src="./signup.js"></script>
+  <script type="module" src="signup.js"></script>
 </body>
 </html>
