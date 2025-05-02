@@ -1,0 +1,35 @@
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    #map { height: 500px; width: 100%; margin-top: 20px; }
+    .map-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+    .map-buttons button {
+      padding: 10px 15px;
+      background-color: #007aa5;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .map-buttons button:hover {
+      background-color: #005c7a;
+    }
+  </style>
+
+
+<div class="map-buttons">
+	<button onclick="goToLocation('raja')">Rumah Raja</button>
+	<button onclick="goToLocation('kantor')">Kantor Desa</button>
+	<button onclick="goToLocation('gereja')">Gereja Katolik</button>
+	<button onclick="goToLocation('gereja2')">Gereja Petra</button>
+	<button onclick="goToLocation('camat')">Rumah Dinas Camat</button>
+</div>
+
+<div id="map" style="height: 500px; width: 100%; margin-top: 20px;"></div>

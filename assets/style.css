@@ -120,26 +120,7 @@ p {
   padding: 30px 20px;
 }
 
-/* Tabel */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
 
-table th,
-table td {
-  padding: 12px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
-table th {
-  background-color: #007aa5;
-  color: #fff;
-}
 
 /* Navigasi */
 nav {
@@ -166,6 +147,15 @@ nav a:hover {
   color: hotpink;
 }
 
+
+footer {
+	background-color: #004466;
+	color: #fff;
+	text-align: center;
+	padding: 15px 10px;
+	margin-top: 20px;
+}
+
 /* Responsif tambahan */
 @media (max-width: 768px) {
   #slideshow-header {
@@ -178,12 +168,6 @@ nav a:hover {
   
   .container {
     padding: 20px 15px;
-  }
-  
-  table,
-  table th,
-  table td {
-    font-size: 14px;
   }
   
   h2 {

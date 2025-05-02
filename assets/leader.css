@@ -25,3 +25,11 @@ table th {
     font-size: 14px;
   }
   
+@media (max-width: 768px) {
+
+  table,
+  table th,
+  table td {
+    font-size: 14px;
+  }
+}
