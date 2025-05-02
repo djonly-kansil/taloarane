@@ -13,12 +13,26 @@ import {
 const auth = getAuth(app);
 const db = getFirestore(app);
 const spinner = document.getElementById("loadingSpinner");
+const btnText = document.getElementById("btn-text");
+
+// Fungsi bantu: tampilkan spinner, sembunyikan teks
+function showSpinner() {
+	btnText.classList.add("hidden");
+	spinner.classList.remove("hidden");
+	spinner.classList.add("visible");
+}
+
+// Fungsi bantu: sembunyikan spinner, tampilkan teks
+function hideSpinner() {
+	btnText.classList.remove("hidden");
+	spinner.classList.add("hidden");
+	spinner.classList.remove("visible");
+}
 
 // ✅ Cek otomatis jika user sudah login
 onAuthStateChanged(auth, async (user) => {
 	if (user) {
-		spinner.style.display = "block";
-		
+		showSpinner();
 		try {
 			const userRef = doc(db, "users", user.uid);
 			const userSnap = await getDoc(userRef);
@@ -35,11 +49,11 @@ onAuthStateChanged(auth, async (user) => {
 				}
 			} else {
 				console.warn("Data pengguna tidak ditemukan.");
-				spinner.style.display = "none";
+				hideSpinner();
 			}
 		} catch (err) {
 			console.error("Gagal ambil data user:", err);
-			spinner.style.display = "none";
+			hideSpinner();
 		}
 	}
 });
@@ -47,7 +61,7 @@ onAuthStateChanged(auth, async (user) => {
 // ✅ Proses login saat tombol ditekan
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
 	e.preventDefault();
-	spinner.style.display = "block";
+	showSpinner();
 	
 	const email = document.getElementById("email").value.trim();
 	const password = document.getElementById("password").value;
@@ -61,7 +75,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 		
 		if (!userSnap.exists()) {
 			alert("Data pengguna tidak ditemukan.");
-			spinner.style.display = "none";
+			hideSpinner();
 			return;
 		}
 		
@@ -78,6 +92,6 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 	} catch (error) {
 		console.error("Login error:", error.message);
 		alert("Login gagal: " + error.message);
-		spinner.style.display = "none";
+		hideSpinner();
 	}
 });
