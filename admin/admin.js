@@ -43,7 +43,7 @@ form.addEventListener("submit", async (e) => {
 		const file = input.files[0];
 		if (!file) continue;
 		
-		if (file.size > 2 * 1024 * 1024) {
+		if (file.size > 5 * 1024 * 1024) {
 			statusDiv.innerHTML = `Slide ${i} melebihi batas ukuran 2MB. Upload dibatalkan.`;
 			return;
 		}
