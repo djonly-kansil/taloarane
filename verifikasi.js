@@ -2,67 +2,72 @@ import app from "../firebase-config.js";
 import {
 	getAuth,
 	onAuthStateChanged,
-	sendEmailVerification
+	signOut,
+	reload,
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-
 import {
 	getFirestore,
 	doc,
-	setDoc
+	getDoc,
+	setDoc,
+	deleteDoc,
+	serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 const auth = getAuth(app);
 const db = getFirestore(app);
-const statusDiv = document.getElementById("status");
 
-// Fungsi untuk simpan data ke Firestore
-async function simpanUser(uid, data) {
-	try {
-		await setDoc(doc(db, "users", uid), data);
-		statusDiv.innerHTML = "<p class='success'>Email telah diverifikasi. Data berhasil disimpan. Anda akan diarahkan ke halaman login.</p>";
-		localStorage.removeItem("userPendingData");
-		setTimeout(() => {
-			window.location.href = "../auth/login.html";
-		}, 3000);
-	} catch (err) {
-		statusDiv.innerHTML = "<p class='error'>Gagal menyimpan data pengguna. Silakan coba lagi.</p>";
-		console.error(err);
-	}
-}
+const statusEl = document.getElementById("status");
 
 onAuthStateChanged(auth, async (user) => {
-	if (user) {
-		await user.reload(); // Refresh status verifikasi
-		if (user.emailVerified) {
-			const dataJson = localStorage.getItem("userPendingData");
-			if (!dataJson) {
-				statusDiv.innerHTML = "<p class='error'>Data pengguna tidak ditemukan. Harap daftar ulang.</p>";
-				return;
-			}
-			
-			const userData = JSON.parse(dataJson);
-			await simpanUser(user.uid, {
-				...userData,
-				email: user.email,
-				createdAt: new Date()
-			});
-			
-		} else {
-			statusDiv.innerHTML = `
-        <p>Email Anda belum diverifikasi.</p>
-        <button id="resend">Kirim Ulang Email Verifikasi</button>
-      `;
-			
-			document.getElementById("resend").addEventListener("click", async () => {
-				try {
-					await sendEmailVerification(user);
-					alert("Email verifikasi telah dikirim ulang.");
-				} catch (err) {
-					alert("Gagal mengirim ulang email verifikasi.");
-				}
-			});
+	if (!user) {
+		statusEl.innerHTML = "Anda belum login. Silakan <a href='login.html'>login</a> terlebih dahulu.";
+		return;
+	}
+	
+	await reload(user); // Pastikan status email terbaru
+	
+	if (!user.emailVerified) {
+		statusEl.innerHTML = `
+			Email Anda belum terverifikasi.<br>
+			Silakan verifikasi email terlebih dahulu, lalu klik tombol di bawah ini untuk cek ulang:
+			<br><br>
+			<button id="reloadBtn">Saya sudah verifikasi, periksa ulang</button>
+		`;
+		document.getElementById("reloadBtn").addEventListener("click", () => location.reload());
+		return;
+	}
+	
+	try {
+		const pendingRef = doc(db, "pendingUsers", user.uid);
+		const pendingSnap = await getDoc(pendingRef);
+		
+		if (!pendingSnap.exists()) {
+			statusEl.textContent = "Data pendaftaran tidak ditemukan atau sudah diproses sebelumnya.";
+			return;
 		}
-	} else {
-		statusDiv.innerHTML = "<p class='error'>Anda belum login. Silakan login terlebih dahulu.</p>";
+		
+		const userRef = doc(db, "users", user.uid);
+		const userSnap = await getDoc(userRef);
+		if (userSnap.exists()) {
+			statusEl.textContent = "Akun sudah diverifikasi dan data sudah tersimpan sebelumnya.";
+			await deleteDoc(pendingRef); // optional cleanup
+			return;
+		}
+		
+		const data = pendingSnap.data();
+		
+		await setDoc(userRef, {
+			...data,
+			email: user.email,
+			verifiedAt: serverTimestamp()
+		});
+		
+		await deleteDoc(pendingRef);
+		
+		statusEl.textContent = "Verifikasi berhasil! Data Anda telah disimpan.";
+	} catch (err) {
+		console.error(err);
+		statusEl.textContent = "Terjadi kesalahan saat memproses verifikasi.";
 	}
 });

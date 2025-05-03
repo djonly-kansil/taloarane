@@ -47,7 +47,6 @@ document.getElementById("signupForm").addEventListener("submit", async e => {
 	let role = "viewer";
 	
 	try {
-		// Validasi kode role
 		const kodeRef = doc(db, "roleCodes", kodeRole);
 		const kodeSnap = await getDoc(kodeRef);
 		if (kodeSnap.exists()) {
@@ -75,37 +74,25 @@ document.getElementById("signupForm").addEventListener("submit", async e => {
 	
 	try {
 		const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-		
-		// Kirim email verifikasi
 		await sendEmailVerification(userCredential.user);
 		
-		// Simpan ke pendingUsers
-		try {
-			await setDoc(doc(db, "pendingUsers", userCredential.user.uid), {
-				nama,
-				email,
-				nohp,
-				role,
-				alamat: {
-					provinsi: provinsi.split('-')[1],
-					kabupaten: kabupaten.split('-')[1],
-					kecamatan: kecamatan.split('-')[1],
-					kelurahan
-				},
-				createdAt: serverTimestamp()
-			});
-		} catch (writeErr) {
-			console.error("Gagal menyimpan ke pendingUsers:", writeErr.message);
-			await Swal.fire("Gagal Menyimpan", "Akun dibuat, email sudah dikirim, tapi gagal menyimpan data Anda. Hubungi admin.", "error");
-			button.disabled = false;
-			button.textContent = "Daftar";
-			return;
-		}
+		// Simpan ke koleksi pendingUsers
+		await setDoc(doc(db, "pendingUsers", userCredential.user.uid), {
+			nama,
+			email,
+			nohp,
+			role,
+			alamat: {
+				provinsi: provinsi.split('-')[1],
+				kabupaten: kabupaten.split('-')[1],
+				kecamatan: kecamatan.split('-')[1],
+				kelurahan
+			},
+			createdAt: serverTimestamp()
+		});
 		
-		// Berhasil semua
 		await Swal.fire("Berhasil", "Pendaftaran berhasil! Silakan verifikasi email Anda terlebih dahulu.", "success");
 		window.location.href = "../verifikasi.html";
-		
 	} catch (error) {
 		let errorMessage = "Terjadi kesalahan saat mendaftar.";
 		switch (error.code) {
