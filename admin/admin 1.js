@@ -8,14 +8,8 @@ import {
 	getFirestore,
 	doc,
 	getDoc,
-	setDoc,
-	serverTimestamp
+	setDoc
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-import {
-	getImageKitSignature,
-	uploadToImageKit
-} from "../imagekit.js";
 
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -42,13 +36,6 @@ form.addEventListener("submit", async (e) => {
 	e.preventDefault();
 	statusDiv.innerHTML = "Mengupload...";
 	
-	const user = auth.currentUser;
-	if (!user) {
-		alert("Pengguna tidak ditemukan. Silakan login ulang.");
-		return;
-	}
-	
-	const idToken = await user.getIdToken();
 	const uploadPromises = [];
 	
 	for (let i = 1; i <= 10; i++) {
@@ -57,29 +44,43 @@ form.addEventListener("submit", async (e) => {
 		if (!file) continue;
 		
 		if (file.size > 5 * 1024 * 1024) {
-			statusDiv.innerHTML = `Slide ${i} melebihi batas ukuran 5MB. Upload dibatalkan.`;
+			statusDiv.innerHTML = `Slide ${i} melebihi batas ukuran 2MB. Upload dibatalkan.`;
 			return;
 		}
 		
 		try {
-			const signatureData = await getImageKitSignature({
-				"Authorization": `Bearer ${idToken}`
-			});
+			// Ambil signature + publicKey dari server
+			const sigRes = await fetch("https://imagekit-upload-djonly-kansils-projects.vercel.app/api/get-signature");
+			const signatureData = await sigRes.json();
 			
-			const finalFileName = `slide${i}.jpg`;
+			const formData = new FormData();
+			formData.append("file", file);
+			formData.append("fileName", `slide${i}.jpg`);
+			formData.append("folder", "/slides");
+			formData.append("useUniqueFileName", "false");
+			formData.append("overwriteFile", "true");
+			formData.append("publicKey", signatureData.publicKey);
+			formData.append("signature", signatureData.signature);
+			formData.append("expire", signatureData.expire);
+			formData.append("token", signatureData.token);
 			
-			const result = await uploadToImageKit(file, signatureData, {
-				fileName: finalFileName,
-				folder: "/slides",
-				useUniqueFileName: false,
-				overwrite: true
-			});
-			
-			const promise = setDoc(doc(db, "slides", `slide${i}`), {
-				fileName: result.name,
-				url: result.url,
-				uploadedAt: serverTimestamp()
-			});
+			const promise = fetch("https://upload.imagekit.io/api/v1/files/upload", {
+					method: "POST",
+					body: formData
+				})
+				.then(res => res.json())
+				.then(async result => {
+					if (result && result.url) {
+						await setDoc(doc(db, "slides", `slide${i}`), {
+							fileName: result.name,
+							url: result.url,
+							uploadedAt: new Date()
+						});
+					} else {
+						console.error("Upload ke ImageKit gagal:", result);
+						throw new Error("Gagal upload ke ImageKit");
+					}
+				});
 			
 			uploadPromises.push(promise);
 		} catch (err) {
@@ -91,9 +92,9 @@ form.addEventListener("submit", async (e) => {
 	
 	try {
 		await Promise.all(uploadPromises);
-		statusDiv.innerHTML = `<div class="alert alert-success">Upload dan penyimpanan semua slide selesai!</div>`;
+		statusDiv.innerHTML = `<div class="alert alert-success">Upload dan penyimpanan URL selesai!</div>`;
 	} catch (err) {
 		console.error("Upload error:", err);
-		statusDiv.innerHTML = `<div class="alert alert-danger">Terjadi kesalahan saat menyimpan data slide.</div>`;
+		statusDiv.innerHTML = `<div class="alert alert-danger">Terjadi kesalahan saat upload atau simpan URL.</div>`;
 	}
 });

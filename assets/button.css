@@ -1,0 +1,34 @@
+
+.button {
+  background: rgba(0, 153, 255, 0.8); /* Biru gelap transparan */
+  color: #0ff;
+  border: 2px solid #0ff;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-family: sans-serif;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 15px;
+  text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+  box-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+  animation: blink 1s infinite alternate;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* untuk Safari */
+  transition: transform 0.2s, background 0.3s;
+}
+
+.button:hover {
+  transform: scale(1.05);
+  background: rgba(0, 31, 63, 0.3);
+}
+
+@keyframes blink {
+  0% {
+    box-shadow: 0 0 2px #0ff, 0 0 5px #0ff;
+    text-shadow: 0 0 3px #0ff;
+  }
+  100% {
+    box-shadow: 0 0 7px #0ff, 0 0 20px #0ff;
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+  }
+}

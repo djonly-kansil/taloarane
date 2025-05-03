@@ -10,6 +10,7 @@ import {
 import {
 	getFirestore,
 	doc,
+	setDoc,
 	getDoc
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
@@ -74,9 +75,9 @@ document.getElementById("signupForm").addEventListener("submit", async e => {
 		const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 		await sendEmailVerification(userCredential.user);
 		
-		// Simpan data ke localStorage untuk digunakan setelah verifikasi
-		const userPendingData = {
+		await setDoc(doc(db, "users", userCredential.user.uid), {
 			nama,
+			email,
 			nohp,
 			role,
 			alamat: {
@@ -84,12 +85,12 @@ document.getElementById("signupForm").addEventListener("submit", async e => {
 				kabupaten: kabupaten.split('-')[1],
 				kecamatan: kecamatan.split('-')[1],
 				kelurahan
-			}
-		};
-		localStorage.setItem("userPendingData", JSON.stringify(userPendingData));
+			},
+			createdAt: new Date()
+		});
 		
-		await Swal.fire("Berhasil", "Pendaftaran berhasil! Silakan verifikasi email Anda terlebih dahulu.", "success");
-		window.location.href = "../verifikasi.html";
+		await Swal.fire("Berhasil", "Pendaftaran berhasil! Silakan verifikasi email Anda.", "success");
+		window.location.href = "confirm.html";
 	} catch (error) {
 		let errorMessage = "Terjadi kesalahan saat mendaftar.";
 		switch (error.code) {
@@ -111,4 +112,4 @@ document.getElementById("signupForm").addEventListener("submit", async e => {
 		button.disabled = false;
 		button.textContent = "Daftar";
 	}
-});
+}); 

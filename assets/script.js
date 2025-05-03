@@ -25,19 +25,20 @@ function loadPage(page) {
 		.then(html => {
 			contentContainer.innerHTML = html;
 			
-			// Jika halaman peta, muat peta.js
-			if (pageFile === "peta") {
-				const script = document.createElement("script");
-		script.src = "assets/peta.js";
-				document.body.appendChild(script);
-			}
+			// Jika halaman peta atau pengumuman, muat script masing-masing
+if (["peta", "pengumuman"].includes(pageFile)) {
+	const script = document.createElement("script");
+	script.type = "module";
+	script.src = `assets/${pageFile}.js`;
+	document.body.appendChild(script);
+}
 		})
 		.catch(() => {
 			contentContainer.innerHTML = "<p>Halaman tidak ditemukan.</p>";
 		});
 }
 
-// Klik menu
+// Klik menu navigasi utama
 document.querySelectorAll("nav a").forEach(link => {
 	link.addEventListener("click", e => {
 		e.preventDefault();
@@ -50,6 +51,15 @@ document.querySelectorAll("nav a").forEach(link => {
 window.addEventListener("DOMContentLoaded", () => {
 	const page = location.hash.replace("#", "");
 	loadPage(page);
+	
+	// Tombol pengumuman sebagai navigasi tambahan
+	const btnPengumuman = document.getElementById("btnPengumuman");
+	if (btnPengumuman) {
+		btnPengumuman.addEventListener("click", () => {
+			history.pushState(null, "", "#pengumuman");
+			loadPage("pengumuman");
+		});
+	}
 });
 
 window.addEventListener("popstate", () => {
