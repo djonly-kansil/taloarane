@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+match /databases/{database}/documents {
+
+// ------------ Custom Functions ------------
+function isAdminOrEditor() {
+return exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ["admin", "editor"];
+}
+
+function isAdmin() {
+return exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+}
+
+function isViewer() {
+return exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "viewer";
+}
+
+// ------------ Collections Rules ------------
+
+// Users Collection
+match /users/{userId} {
+allow create: if request.auth != null && request.auth.uid == userId; // Hanya user terautentikasi yang bisa buat dokumen sendiri
+allow read, update, delete: if request.auth.uid == userId || isAdmin(); // Baca/edit diri sendiri atau oleh admin
+}
+
+// Role Codes Collection (untuk validasi role)
+match /roleCodes/{codeId} {
+allow read: if true; // Bisa dibaca semua orang
+allow write: if false; // Tidak bisa diubah dari client
+}
+
+// Di Firestore Rules, tambahkan:
+match /pengumuman/{docId} {
+allow read: if true; // Sesuaikan dengan kebutuhan
+allow write: if isAdminOrEditor();
+}
+
+// Slides Collection (konten utama)
+match /slides/{slideId} {
+allow read, write: if isAdminOrEditor(); // Hanya admin/editor yang bisa baca/tulis
+}
+}
+}

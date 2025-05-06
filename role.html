@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Role User</title>
+</head>
+<body>
+  <h2>Edit Role Pengguna</h2>
+  <form id="roleForm">
+    <label>UID User:
+      <input type="text" id="uid" required />
+    </label><br /><br />
+    <label>Role:
+      <select id="role" required>
+        <option value="">-- Pilih Role --</option>
+        <option value="admin">admin</option>
+        <option value="editor">editor</option>
+        <option value="viewer">viewer</option>
+      </select>
+    </label><br /><br />
+    <button type="submit">Simpan Role</button>
+  </form>
+  <div id="status"></div>
+
+  <script type="module">
+    import {
+      getFirestore,
+      doc,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import app from "./firebase-config.js";
+
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const form = document.getElementById("roleForm");
+    const statusDiv = document.getElementById("status");
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        alert("Harap login terlebih dahulu");
+        window.location.href = "./auth/login.html";
+      }
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const uid = document.getElementById("uid").value.trim();
+      const role = document.getElementById("role").value;
+
+      try {
+        await setDoc(doc(db, "users", uid), { role }, { merge: true });
+        statusDiv.innerText = `Role "${role}" berhasil disimpan untuk UID ${uid}`;
+      } catch (err) {
+        console.error(err);
+        statusDiv.innerText = "Gagal menyimpan role.";
+      }
+    });
+  </script>
+</body>
+</html>
