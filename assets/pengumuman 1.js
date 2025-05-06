@@ -18,28 +18,22 @@ async function tampilkanPengumuman() {
 			return;
 		}
 		
-		const { fileType, fileName } = docSnap.data();
+		const { url, fileType, fileName } = docSnap.data();
 		const ext = fileName.split(".").pop().toLowerCase();
 		
-		// Gunakan URL dasar dan tambahkan cache buster
-		const baseUrl = `https://ik.imagekit.io/taloarane/pengumuman/${fileName}`;
-		const freshUrl = `${baseUrl}?t=${Date.now()}`;
-		
-		if (["jpg", "jpeg", "png", "gif", "webp"].includes(ext)) {
-			container.innerHTML = `<img src="${freshUrl}" alt="Pengumuman" style="max-width:100%;">`;
-		} else if (["doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(ext)) {
-			const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(baseUrl)}&embedded=true`;
+		if (["doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(ext)) {
+			const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
 			container.innerHTML = `<iframe src="${viewerUrl}" style="width:100%; height:600px;" frameborder="0"></iframe>`;
 		} else if (ext === "pdf") {
-			container.innerHTML = `<iframe src="${freshUrl}" style="width:100%; height:600px;" frameborder="0"></iframe>`;
+			container.innerHTML = `<iframe src="${url}" style="width:100%; height:600px;" frameborder="0"></iframe>`;
 		} else if (ext === "html" || ext === "htm") {
-			container.innerHTML = `<iframe src="${freshUrl}" style="width:100%; height:600px;" frameborder="0"></iframe>`;
+			container.innerHTML = `<iframe src="${url}" style="width:100%; height:600px;" frameborder="0"></iframe>`;
 		} else if (ext === "txt") {
-			const res = await fetch(freshUrl);
+			const res = await fetch(url);
 			const text = await res.text();
 			container.innerHTML = `<pre style="white-space: pre-wrap; background:#f5f5f5; padding:1rem;">${text}</pre>`;
 		} else {
-			container.innerHTML = `<a href="${freshUrl}" target="_blank">Silahkan Buka (${fileName})</a>`;
+			container.innerHTML = `<a href="${url}" target="_blank">Silahkan Buka (${fileName})</a>`;
 		}
 	} catch (err) {
 		console.error(err);
